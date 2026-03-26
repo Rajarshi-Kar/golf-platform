@@ -18,51 +18,58 @@ def get_db():
     return conn
 
 def init_db():
-    conn = get_db()
-    c = conn.cursor()
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY,
-        email TEXT UNIQUE NOT NULL,
-        name TEXT NOT NULL,
-        password TEXT NOT NULL,
-        subscription_active BOOLEAN DEFAULT 0,
-        charity_percentage INTEGER DEFAULT 10,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )''')
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS scores (
-        id INTEGER PRIMARY KEY,
-        user_id INTEGER NOT NULL,
-        score_value INTEGER NOT NULL,
-        score_date DATE NOT NULL,
-        FOREIGN KEY(user_id) REFERENCES users(id),
-        UNIQUE(user_id, score_date)
-    )''')
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS draws (
-        id INTEGER PRIMARY KEY,
-        draw_date DATE UNIQUE,
-        winning_numbers TEXT,
-        status TEXT DEFAULT 'pending',
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )''')
-    
-    c.execute('''CREATE TABLE IF NOT EXISTS winners (
-        id INTEGER PRIMARY KEY,
-        draw_id INTEGER NOT NULL,
-        user_id INTEGER NOT NULL,
-        match_type TEXT,
-        prize_amount REAL,
-        status TEXT DEFAULT 'pending',
-        FOREIGN KEY(draw_id) REFERENCES draws(id),
-        FOREIGN KEY(user_id) REFERENCES users(id)
-    )''')
-    
-    conn.commit()
-    conn.close()
+    try:
+        conn = get_db()
+        c = conn.cursor()
+        
+        c.execute('''CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            email TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            password TEXT NOT NULL,
+            subscription_active BOOLEAN DEFAULT 0,
+            charity_percentage INTEGER DEFAULT 10,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''')
+        
+        c.execute('''CREATE TABLE IF NOT EXISTS scores (
+            id INTEGER PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            score_value INTEGER NOT NULL,
+            score_date DATE NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES users(id),
+            UNIQUE(user_id, score_date)
+        )''')
+        
+        c.execute('''CREATE TABLE IF NOT EXISTS draws (
+            id INTEGER PRIMARY KEY,
+            draw_date DATE UNIQUE,
+            winning_numbers TEXT,
+            status TEXT DEFAULT 'pending',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )''')
+        
+        c.execute('''CREATE TABLE IF NOT EXISTS winners (
+            id INTEGER PRIMARY KEY,
+            draw_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            match_type TEXT,
+            prize_amount REAL,
+            status TEXT DEFAULT 'pending',
+            FOREIGN KEY(draw_id) REFERENCES draws(id),
+            FOREIGN KEY(user_id) REFERENCES users(id)
+        )''')
+        
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        pass
 
 init_db()
+
+@app.route('/health')
+def health():
+    return jsonify({'status': 'ok'}), 200
 
 @app.route('/')
 def index():
