@@ -1,0 +1,28 @@
+/* Golf Charity Platform - Inline styles used in base.html */
+
+/* This file is reserved for future CSS that doesn't need to be inline */
+
+/* Example: Animation for score submission */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Example: Loading state */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Additional mobile optimizations can be added here */
+@media (max-width: 768px) {
+    .stats {
+        flex-direction: column;
+    }
+}

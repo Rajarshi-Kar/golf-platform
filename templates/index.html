@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Golf Charity Platform - Score, Play, Donate{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div style="text-align: center; color: white; margin: 4rem 0;">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Score Better. Help Others.</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.9;">Track your golf scores, enter monthly draws, and support charities you love.</p>
+        
+        {% if not session.user_id %}
+            <a href="/signup" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Get Started</a>
+            <a href="/signin" class="btn btn-secondary" style="font-size: 1.1rem; padding: 1rem 2rem; margin-left: 1rem;">Sign In</a>
+        {% else %}
+            <a href="/dashboard" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">Go to Dashboard</a>
+        {% endif %}
+    </div>
+    
+    <div class="card" style="margin-top: 3rem;">
+        <div class="grid">
+            <div style="text-align: center;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Track Scores</h3>
+                <p>Record your Stableford scores (1-45 points) and see your best performances tracked.</p>
+            </div>
+            <div style="text-align: center;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Monthly Draws</h3>
+                <p>Your top 5 scores qualify you for monthly draws with prizes based on matching numbers.</p>
+            </div>
+            <div style="text-align: center;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1rem;">Give Back</h3>
+                <p>Choose a charity and help them earn 10% of all subscription fees you contribute.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Subscription Plans</h2>
+        <div class="grid">
+            <div style="text-align: center; padding: 2rem; border: 2px solid #ddd; border-radius: 8px;">
+                <h3>Monthly</h3>
+                <div style="font-size: 2.5rem; color: #667eea; font-weight: bold; margin: 1rem 0;">$9.99</div>
+                <p style="margin-bottom: 1rem;">/month</p>
+                <ul style="text-align: left; list-style: none;">
+                    <li>Track unlimited scores</li>
+                    <li>Enter monthly draws</li>
+                    <li>Support a charity</li>
+                    <li>10% to charity</li>
+                </ul>
+            </div>
+            <div style="text-align: center; padding: 2rem; border: 3px solid #667eea; border-radius: 8px; position: relative;">
+                <span style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #667eea; color: white; padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.85rem;">BEST VALUE</span>
+                <h3>Yearly</h3>
+                <div style="font-size: 2.5rem; color: #667eea; font-weight: bold; margin: 1rem 0;">$99.99</div>
+                <p style="margin-bottom: 1rem;">/year</p>
+                <ul style="text-align: left; list-style: none;">
+                    <li>Track unlimited scores</li>
+                    <li>Enter monthly draws</li>
+                    <li>Support a charity</li>
+                    <li>10% to charity (12 months!)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

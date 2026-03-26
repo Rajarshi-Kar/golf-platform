@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Golf Charity{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Welcome, {{ user.name }}!</h1>
+    
+    <div class="stats" style="margin: 2rem 0;">
+        <div class="stat-box">
+            <h3>Recent Scores</h3>
+            <div class="value">{{ scores|length }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Subscription</h3>
+            <div class="value" style="font-size: 1.2rem;">
+                {% if user.subscription_active %}Active{% else %}Inactive{% endif %}
+            </div>
+        </div>
+        <div class="stat-box">
+            <h3>Charity Contribution</h3>
+            <div class="value">{{ user.charity_percentage }}%</div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Add New Score</h2>
+        <div id="error-message" class="error" style="display: none;"></div>
+        <div id="success-message" class="success" style="display: none;"></div>
+        
+        <form id="score-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="score">Score (1-45 Stableford Points)</label>
+                    <input type="number" id="score" name="score" min="1" max="45" required placeholder="32">
+                </div>
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Score</button>
+        </form>
+    </div>
+    
+    {% if scores %}
+    <div class="card">
+        <h2>Your Scores (Last 5)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Points</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                <tr>
+                    <td>{{ score.score_date }}</td>
+                    <td>{{ score.score_value }}</td>
+                    <td>⭐ Counted</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+    
+    <div class="card">
+        <h2>How It Works</h2>
+        <div class="grid">
+            <div>
+                <h3>1. Submit Scores</h3>
+                <p>Enter your Stableford scores from golf rounds (1-45 points). We track your last 5 scores.</p>
+            </div>
+            <div>
+                <h3>2. Monthly Draws</h3>
+                <p>Your top scores are used in our monthly draws. Match 3, 4, or 5 numbers to win prizes!</p>
+            </div>
+            <div>
+                <h3>3. Support Charity</h3>
+                <p>10% of your subscription goes to your chosen charity. Feel good about playing golf.</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h2>Prize Structure</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Match Type</th>
+                    <th>Numbers Matched</th>
+                    <th>Pool Share</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Jackpot</strong></td>
+                    <td>Match 5 numbers</td>
+                    <td>40% of prize pool</td>
+                </tr>
+                <tr>
+                    <td><strong>Major Prize</strong></td>
+                    <td>Match 4 numbers</td>
+                    <td>35% of prize pool</td>
+                </tr>
+                <tr>
+                    <td><strong>Console Prize</strong></td>
+                    <td>Match 3 numbers</td>
+                    <td>25% of prize pool</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="card">
+        <h2>Subscription Status</h2>
+        {% if user.subscription_active %}
+            <p style="color: #3c3; font-weight: bold;">Your subscription is active!</p>
+            <p style="margin-top: 1rem;">You are currently eligible for monthly draws and your charity receives 10% of your subscription.</p>
+        {% else %}
+            <p style="color: #c33; font-weight: bold;">Your subscription is not active.</p>
+            <p style="margin-top: 1rem;">Subscribe to start playing in draws and support a charity.</p>
+            <button class="btn btn-primary" onclick="subscribeNow()" style="margin-top: 1rem;">Subscribe Now - $9.99/month</button>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+    
+    document.getElementById('score-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const score = document.getElementById('score').value;
+        const date = document.getElementById('date').value;
+        
+        try {
+            const response = await fetch('/api/score', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ score, date })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                document.getElementById('success-message').textContent = 'Score added successfully! Refreshing...';
+                document.getElementById('success-message').style.display = 'block';
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                document.getElementById('error-message').textContent = data.error;
+                document.getElementById('error-message').style.display = 'block';
+            }
+        } catch (err) {
+            document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+            document.getElementById('error-message').style.display = 'block';
+        }
+    });
+    
+    async function subscribeNow() {
+        try {
+            const response = await fetch('/api/subscribe', { method: 'POST' });
+            if (response.ok) {
+                location.reload();
+            }
+        } catch (err) {
+            alert('Error activating subscription. Please try again.');
+        }
+    }
+</script>
+{% endblock %}
