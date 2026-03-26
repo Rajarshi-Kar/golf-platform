@@ -1,13 +1,9 @@
 {
   "buildCommand": "pip install -r requirements.txt",
-  "devCommand": "python app.py",
   "framework": "python",
-  "outputDirectory": ".",
   "env": {
-    "SECRET_KEY": "@golf_secret"
+    "PYTHONUNBUFFERED": "1"
   },
-  "envPrefix": "GOLF_",
-  "installCommand": "pip install -r requirements.txt",
   "functions": {
     "api/index.py": {
       "memory": 1024,
