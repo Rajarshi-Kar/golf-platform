@@ -1,0 +1,8 @@
+golf_platform.db
+__pycache__
+*.pyc
+.git
+.gitignore
+.env
+.env.local
+*.md
